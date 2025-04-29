@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 4000
 
 const connectDB = require('./models/connection')
 const Admin = require('./routes/admin')
+const {adminRoute} = require('./middleware/auth')
+
 
 app.use(express.json())
 
