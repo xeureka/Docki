@@ -57,7 +57,6 @@ router.post('/', async (req,res) => {
     }
 })
 
-// only accessible by admin users
 
 
 module.exports = router
