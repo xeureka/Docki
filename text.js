@@ -1,13 +1,9 @@
 
-// lets just blidly implement and 
+// creating and getting of admin dashboard is done
 
-// change to code the above given image
+// the admin has acccess to see the user aka students
 
-// so for now with unlimeted token seesion
+// and create,update and delete of books
 
-// let just the site do the job
 
-// and then we will gonna modify and
-
-// implement so many things in it
-
+// and make the admin dashboard restricted

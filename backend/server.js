@@ -7,12 +7,12 @@ const PORT = process.env.PORT || 4000
 
 
 const connectDB = require('./models/connection')
-const Login = require('./routes/login')
+const Admin = require('./routes/admin')
 
 app.use(express.json())
 
 
-app.use('/admin',Login)
+app.use('/admin',Admin)
 
 
 connectDB()
