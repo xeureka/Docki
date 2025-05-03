@@ -45,4 +45,30 @@ router.post('/books',upload.single('file'), async (req,res) => {
 })
 
 
+router.delete('/books/:id', async (req,res) => {
+
+    try {
+        
+        let book = await Books.findOneAndDelete(req.params.id)
+
+        res.json(book)
+
+        
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json(error.message)
+    }
+
+})
+
+
 module.exports = router;
+
+
+// lets add the follwoing functionalities right now
+
+// PUT books
+// DELETE books
+
+
+// i think we will gonna retrive the id in the frontned
