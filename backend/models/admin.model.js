@@ -1,7 +1,4 @@
 
-// DB for admins only
-
-
 const mongoose = require('mongoose')
 
 
