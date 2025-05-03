@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 export default function LoginRegisterPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,36 +16,48 @@ export default function LoginRegisterPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const action = isLogin ? "Logging in" : "Registering";
-    console.log(action, formData);
-    // TODO: integrate with backend
+    const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+
+    try {
+      const response = await axios.post(
+        `http://localhost:4000${endpoint}`,
+        formData,
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+
+      const token = response.data;
+      localStorage.setItem("token", token);
+
+      alert(`${isLogin ? "Login" : "Registration"} successful!`);
+      // Optionally redirect:
+      // window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Auth error:", error);
+      alert(
+        error.response?.data || "An error occurred. Please check your credentials."
+      );
+    }
   };
 
   return (
-
-    
-
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 text-white px-4">
-
-
-
       <div className="bg-gray-950 p-8 rounded-2xl shadow-2xl max-w-md w-full space-y-6">
-      <div className="w-full overflow-hidden border-b border-gray-700 mb-6">
-        <div className="whitespace-nowrap animate-marquee text-lg font-bold tracking-wide text-indigo-400 glow-text">
-          📚 Welcome to the Digital Library — Read. Learn. Grow. 📖 &nbsp; 📚 Welcome to the Digital Library — Read. Learn. Grow. 📖
+        <div className="w-full overflow-hidden border-b border-gray-700 mb-6">
+          <div className="whitespace-nowrap animate-marquee text-lg font-bold tracking-wide text-indigo-400 glow-text">
+            📚 Welcome to the Digital Library — Read. Learn. Grow. 📖 &nbsp; 📚
+            Welcome to the Digital Library — Read. Learn. Grow. 📖
+          </div>
         </div>
-        
-      </div>
         <h1 className="text-3xl font-bold text-center">
           {isLogin ? "Welcome Back" : "Create an Account"}
         </h1>
         <p className="text-sm text-gray-400 text-center">
           {isLogin ? "Please login to your account" : "Register to get started"}
         </p>
-
-
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
