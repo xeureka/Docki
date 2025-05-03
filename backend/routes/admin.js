@@ -1,14 +1,9 @@
 
-/** 
-    Post /admin/books
-    PUT /admin/books
-    Delete /admin/books
-
-*/
 
 const express = require('express')
 const multer = require('multer')
 const Books = require('../models/books.model')
+const upload = multer({ dest: 'uploads/' })
 
 const router = express.Router()
 
@@ -18,9 +13,7 @@ router.get('/', (req,res) => {
 })
 
 // route to add new books
-router.post('/books', async (req,res) => {
-
- 
+router.post('/books',upload.single('file'), async (req,res) => {
 
     try {
 
@@ -30,11 +23,12 @@ router.post('/books', async (req,res) => {
             return res.status(401).json('Book Already Added !!')
         }
 
+
         book = new Books({
             title: req.body.title,
             author:req.body.author,
             publicationDate: req.body.publicationDate,
-            bookFile: req.body.bookFile,
+            bookFile: req.file.path,
             tags:req.body.tags
         })
 
