@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+export default function AuthPage() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/users"); // Correct redirect path
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -17,26 +24,42 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const endpoint = isLogin ? "/signin" : "/signup";
+
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/login",
+        `http://localhost:3000/auth${endpoint}`,
         formData,
         {
           headers: { "Content-Type": "application/json" }
         }
       );
 
-      const token = response.data;
+      const token = response.data.token;
       localStorage.setItem("token", token);
 
-      alert("Login successful!");
-      // window.location.href = "/dashboard";
+      alert(`${isLogin ? "Login" : "Registration"} successful!`);
+      navigate("/users"); // Correct redirect path
     } catch (error) {
-      console.error("Login error:", error);
+      console.error(`${isLogin ? "Login" : "Signup"} error:`, error);
       alert(
-        error.response?.data || "An error occurred. Please check your credentials."
+        error.response?.data?.message || "An error occurred. Please check your input."
       );
     }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await axios.post("http://localhost:3000/auth/signout", {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+    } catch (error) {
+      console.error("Signout error:", error);
+    }
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
@@ -48,8 +71,13 @@ export default function LoginPage() {
             Welcome to the Digital Library — Read. Learn. Grow. 📖
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-center">Welcome Back</h1>
-        <p className="text-sm text-gray-400 text-center">Please login to your account</p>
+
+        <h1 className="text-3xl font-bold text-center">
+          {isLogin ? "Welcome Back" : "Create an Account"}
+        </h1>
+        <p className="text-sm text-gray-400 text-center">
+          {isLogin ? "Please login to your account" : "Register to get started"}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -74,13 +102,31 @@ export default function LoginPage() {
               className="w-full p-2 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
           <button
             type="submit"
             className="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
           >
-            Login
+            {isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
+
+        <div className="text-sm text-center text-gray-400">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
+          <button
+            className="ml-1 text-blue-400 hover:underline"
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            {isLogin ? "Sign Up" : "Login"}
+          </button>
+        </div>
+
+        <button
+          onClick={handleSignOut}
+          className="w-full text-red-500 text-sm mt-2 hover:underline"
+        >
+          Sign Out
+        </button>
       </div>
     </div>
   );

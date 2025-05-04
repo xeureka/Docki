@@ -1,19 +1,19 @@
 
 
 require('dotenv').config()
-const {doHash,doHashValidation,hmacProcess} = require('../utils/hashing')
+const {doHash,doHashValidation} = require('../utils/hashing')
 const {signUpSchema} = require('../middleware/validator') 
 const jwt = require('jsonwebtoken')
 const Users = require('../models/users.model')
 
 async function signUp(req,res) {
 
-    const {email,password,name} = req.body
+    const {email,password} = req.body
 
 
     try {
 
-        const {error,value} = signUpSchema.validate({email,password,name})
+        const {error,value} = signUpSchema.validate({email,password})
 
         if (error){
             return res.status(401).json({success: false, message: error.details[0].message})
@@ -53,10 +53,10 @@ async function signUp(req,res) {
 
 async function signIn(req,res){
 
-    const {email,password,name} = req.body
+    const {email,password} = req.body
 
     try {
-        const {error,value} = signUpSchema.validate({email,password,name})
+        const {error,value} = signUpSchema.validate({email,password})
 
         if (error){
             return res.status(401).json({success: false, message: error.details[0].message})
