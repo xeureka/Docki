@@ -10,7 +10,7 @@ export default function AuthPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/users"); // Correct redirect path
+      navigate("/users"); 
     }
   }, [navigate]);
 
