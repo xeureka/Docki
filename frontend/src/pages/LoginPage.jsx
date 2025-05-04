@@ -1,10 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function LoginRegisterPage() {
-  const [isLogin, setIsLogin] = useState(true);
+export default function LoginPage() {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: ""
   });
@@ -18,11 +16,10 @@ export default function LoginRegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
 
     try {
       const response = await axios.post(
-        `http://localhost:4000${endpoint}`,
+        "http://localhost:4000/api/auth/login",
         formData,
         {
           headers: { "Content-Type": "application/json" }
@@ -32,11 +29,10 @@ export default function LoginRegisterPage() {
       const token = response.data;
       localStorage.setItem("token", token);
 
-      alert(`${isLogin ? "Login" : "Registration"} successful!`);
-      // Optionally redirect:
+      alert("Login successful!");
       // window.location.href = "/dashboard";
     } catch (error) {
-      console.error("Auth error:", error);
+      console.error("Login error:", error);
       alert(
         error.response?.data || "An error occurred. Please check your credentials."
       );
@@ -52,27 +48,10 @@ export default function LoginRegisterPage() {
             Welcome to the Digital Library — Read. Learn. Grow. 📖
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-center">
-          {isLogin ? "Welcome Back" : "Create an Account"}
-        </h1>
-        <p className="text-sm text-gray-400 text-center">
-          {isLogin ? "Please login to your account" : "Register to get started"}
-        </p>
+        <h1 className="text-3xl font-bold text-center">Welcome Back</h1>
+        <p className="text-sm text-gray-400 text-center">Please login to your account</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div>
-              <label className="block mb-1 text-sm font-medium">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full p-2 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          )}
           <div>
             <label className="block mb-1 text-sm font-medium">Email</label>
             <input
@@ -99,20 +78,9 @@ export default function LoginRegisterPage() {
             type="submit"
             className="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
           >
-            {isLogin ? "Login" : "Register"}
+            Login
           </button>
         </form>
-        <div className="text-center">
-          <p className="text-sm text-gray-400">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-          </p>
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-400 hover:underline mt-1"
-          >
-            {isLogin ? "Register here" : "Login instead"}
-          </button>
-        </div>
       </div>
     </div>
   );
