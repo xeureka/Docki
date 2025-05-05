@@ -10,14 +10,14 @@ export default function AuthPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/users"); 
+      navigate("/users");
     }
   }, [navigate]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -30,9 +30,7 @@ export default function AuthPage() {
       const response = await axios.post(
         `http://localhost:3000/auth${endpoint}`,
         formData,
-        {
-          headers: { "Content-Type": "application/json" }
-        }
+        { withCredentials: true }
       );
 
       const token = response.data.token;
@@ -43,18 +41,23 @@ export default function AuthPage() {
     } catch (error) {
       console.error(`${isLogin ? "Login" : "Signup"} error:`, error);
       alert(
-        error.response?.data?.message || "An error occurred. Please check your input."
+        error.response?.data?.message ||
+          "An error occurred. Please check your input."
       );
     }
   };
 
   const handleSignOut = async () => {
     try {
-      await axios.post("http://localhost:3000/auth/signout", {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+      await axios.post(
+        "http://localhost:3000/auth/signout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
+      );
     } catch (error) {
       console.error("Signout error:", error);
     }
