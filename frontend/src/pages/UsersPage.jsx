@@ -52,7 +52,7 @@ export default function UsersPage() {
       
       {/* Navbar */}
       <div className="w-full px-6 py-4 bg-zinc-900 border-b border-zinc-800 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-indigo-400">📚  Digital Library</h1>
+        <h1 className="text-xl font-bold text-indigo-400">  Digital Library</h1>
         <input
           type="text"
           placeholder="Search by title or author..."

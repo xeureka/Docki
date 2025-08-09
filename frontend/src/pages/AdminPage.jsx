@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 export default function AdminPage() {
   const [books, setBooks] = useState([]);
@@ -10,6 +11,8 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("library");
   const [showModal, setShowModal] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
+  
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     axios.get("http://localhost:3000/users")
@@ -76,6 +79,16 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen px-6 py-10 text-white bg-gradient-to-br from-zinc-900 via-black to-zinc-800 transition-all">
       <h1 className="text-4xl font-bold mb-8 text-center drop-shadow-lg">📚 Admin Dashboard</h1>
+
+      {/* Redirect Button to Users Page */}
+      <div className="flex justify-center mb-4">
+        <button
+          onClick={() => navigate("/users")} // Navigate to /users
+          className="bg-green-600 px-6 py-3 rounded text-white text-lg hover:bg-green-700"
+        >
+          Go to Users
+        </button>
+      </div>
 
       {/* Cinematic Tabs */}
       <div className="flex justify-center mb-10 gap-4 relative">

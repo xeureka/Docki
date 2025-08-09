@@ -23,7 +23,6 @@ export default function AuthPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const endpoint = isLogin ? "/signin" : "/signup";
 
     try {
@@ -33,11 +32,13 @@ export default function AuthPage() {
         { withCredentials: true }
       );
 
+      // Backend must return token for both signup and signin
       const token = response.data.token;
-      localStorage.setItem("token", token);
+      if (token) {
+        localStorage.setItem("token", token);
+      }
 
-      alert(`${isLogin ? "Login" : "Registration"} successful!`);
-      navigate("/users"); // Correct redirect path
+      navigate("/users");
     } catch (error) {
       console.error(`${isLogin ? "Login" : "Signup"} error:`, error);
       alert(
@@ -52,11 +53,7 @@ export default function AuthPage() {
       await axios.post(
         "http://localhost:3000/auth/signout",
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        { withCredentials: true }
       );
     } catch (error) {
       console.error("Signout error:", error);
@@ -70,8 +67,7 @@ export default function AuthPage() {
       <div className="bg-gray-950 p-8 rounded-2xl shadow-2xl max-w-md w-full space-y-6">
         <div className="w-full overflow-hidden border-b border-gray-700 mb-6">
           <div className="whitespace-nowrap animate-marquee text-lg font-bold tracking-wide text-indigo-400 glow-text">
-            📚 Welcome to the Digital Library — Read. Learn. Grow. 📖 &nbsp; 📚
-            Welcome to the Digital Library — Read. Learn. Grow. 📖
+            Welcome to the Digital Library — Read. Learn. Grow. &nbsp; Welcome to the Digital Library — Read. Learn. Grow.
           </div>
         </div>
 

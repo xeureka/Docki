@@ -12,6 +12,21 @@ function PrivateRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/" />;
 }
 
+function AdminRoute({ children }) {
+  const isAuthenticated = useMemo(() => {
+    return !!localStorage.getItem("token");
+  }, []);
+
+  const user = useMemo(() => {
+    const token = localStorage.getItem("token");
+    return token ? JSON.parse(atob(token.split('.')[1])) : null; 
+  }, []);
+
+  const isAdmin = user && user.role === "admin"; 
+
+  return isAuthenticated && isAdmin ? children : <Navigate to="/" />;
+}
+
 function App() {
   return (
     <Router>
@@ -19,7 +34,6 @@ function App() {
         {/* Login is the default route */}
         <Route path="/" element={<LoginPage />} />
 
-        {/* Protected routes */}
         <Route
           path="/users"
           element={
@@ -31,9 +45,9 @@ function App() {
         <Route
           path="/admin"
           element={
-            <PrivateRoute>
+            <AdminRoute>
               <AdminPage />
-            </PrivateRoute>
+            </AdminRoute>
           }
         />
 
