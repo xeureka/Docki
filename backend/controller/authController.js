@@ -3,6 +3,7 @@ const { doHash, doHashValidation } = require("../utils/hashing");
 const { signUpSchema } = require("../middleware/validator");
 const jwt = require("jsonwebtoken");
 const Users = require("../models/users.model");
+const { signToken } = require("../utils/generateToken");
 
 async function signUp(req, res) {
   const { email, password } = req.body;
@@ -13,7 +14,7 @@ async function signUp(req, res) {
     if (error) {
       return res
         .status(401)
-        .json({ success: false, message: error.details[0].message });
+        .json({ success: false, message: error.details[0].message, token });
     }
 
     const isExistingUser = await Users.findOne({ email });
@@ -30,10 +31,19 @@ async function signUp(req, res) {
       email,
       password: hashedPassword,
     });
+    const adminEmails = process.env.adminEmail.split(",");
+
+    if (adminEmails.includes(newUser.email)) {
+      newUser.role = "admin";
+    }
 
     const result = await newUser.save();
 
     result.password = undefined;
+
+    const token = signToken(newUser);
+
+    res.cookie("Authorization", "Bearer " + token);
 
     res.status(201).json({
       success: true,
@@ -73,19 +83,10 @@ async function signIn(req, res) {
         .json({ success: false, message: "Invalid credentials !!" });
     }
 
-    const token = jwt.sign(
-      {
-        useId: existingUser._id,
-        email: existingUser.email,
-        verified: existingUser.verified,
-      },
-      process.env.jwtPrivateKey,
-      { expiresIn: "8h" }
-    );
+    const token = signToken(existingUser);
 
-    res.cookie("Authorization", "Bearer " + token, {
-      expires: new Date(Date.now() + 8 * 3600000),
-    });
+    res.cookie("Authorization", "Bearer " + token);
+
     res.json({
       success: true,
       token,
